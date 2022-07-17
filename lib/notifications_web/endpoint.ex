@@ -10,7 +10,14 @@ defmodule NotificationsWeb.Endpoint do
     signing_salt: "K6Rngl2Y"
   ]
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  socket "/live",
+    Phoenix.LiveView.Socket,
+    websocket: [connect_info: [session: @session_options]]
+
+  socket "/notifications",
+    NotificationsWeb.NotificationsSocket,
+    websocket: true,
+    longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.
   #
