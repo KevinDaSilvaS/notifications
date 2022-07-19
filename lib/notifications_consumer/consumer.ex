@@ -1,5 +1,5 @@
 defmodule NotificationsConsumer.Consumer do
-  alias NotificationsWeb.Socket.SocketClient
+  alias Notifications.Socket.SocketClient
   use Broadway
 
   #{

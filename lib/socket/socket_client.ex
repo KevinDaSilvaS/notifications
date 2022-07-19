@@ -1,4 +1,4 @@
-defmodule NotificationsWeb.Socket.SocketClient do
+defmodule Notifications.Socket.SocketClient do
   use Slipstream,
     restart: :permanent
 
