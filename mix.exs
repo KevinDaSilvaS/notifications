@@ -39,7 +39,10 @@ defmodule Notifications.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:slipstream, "~> 0.8.3"},
+      {:broadway, "~> 1.0"},
+      {:broadway_rabbitmq, "~> 0.7.2"}
     ]
   end
 
