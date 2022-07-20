@@ -1,9 +1,11 @@
 defmodule NotificationsConsumer.Consumer do
   alias Notifications.Socket.SocketClient
+  alias Mapper.NotificationMapper
   use Broadway
 
   #{
    # "topic": "12345",
+   # "title": "uma notificacao",
    # "message": "uma notificacao",
    # "redirect": ""
    #}
@@ -17,7 +19,7 @@ defmodule NotificationsConsumer.Consumer do
            queue: "notifications",
            declare: [durable: true],
            connection: [
-             host: "172.17.0.2"
+             host: "172.17.0.3"
            ],
            on_failure: :reject_and_requeue}
       ],
@@ -37,12 +39,12 @@ defmodule NotificationsConsumer.Consumer do
     {:ok, socket} = SocketClient.connect(uri: "ws://0.0.0.0:4000/notifications/websocket")
     {:ok, joined_socket} = SocketClient.join_topic(socket, topic)
 
-    SocketClient.push(joined_socket, topic, %{
-      "body" => body,
-      "broadcasting_key" => "admin"
-    })
+    notification = NotificationMapper.prepare_notification(body)
 
-    message
+    SocketClient.push(joined_socket, topic, notification)
+
+    body = Map.get(notification, "body")
+    Map.put(message, :data, body)
   end
 
   def handle_failed(messages, _context) do
