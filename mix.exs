@@ -42,7 +42,8 @@ defmodule Notifications.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:slipstream, "~> 0.8.3"},
       {:broadway, "~> 1.0"},
-      {:broadway_rabbitmq, "~> 0.7.2"}
+      {:broadway_rabbitmq, "~> 0.7.2"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 
