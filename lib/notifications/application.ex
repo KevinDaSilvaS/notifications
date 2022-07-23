@@ -8,6 +8,7 @@ defmodule Notifications.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      {Repository.Notifications, []},
       # Start the Telemetry supervisor
       NotificationsWeb.Telemetry,
       # Start the PubSub system
