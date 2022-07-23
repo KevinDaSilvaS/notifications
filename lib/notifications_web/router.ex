@@ -8,7 +8,7 @@ defmodule NotificationsWeb.Router do
   scope "/api", NotificationsWeb do
     pipe_through :api
 
-    get "/notifications/:user", NotificationsController, :get_notifications
+    get "/notifications/:topic", NotificationsController, :get_notifications
   end
 
   # Enables LiveDashboard only for development
