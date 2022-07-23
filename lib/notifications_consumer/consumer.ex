@@ -33,13 +33,14 @@ defmodule NotificationsConsumer.Consumer do
   end
 
   def handle_message(_processor, message, _context) do
-    {topic, body} = Map.pop(Jason.decode!(message.data), "topic")
+    data = Jason.decode!(message.data)
+    topic = Map.get(data, "topic")
     topic = "notifications:" <> topic
 
     {:ok, socket} = SocketClient.connect(uri: "ws://0.0.0.0:4000/notifications/websocket")
     {:ok, joined_socket} = SocketClient.join_topic(socket, topic)
 
-    notification = NotificationMapper.prepare_notification(body)
+    notification = NotificationMapper.prepare_notification(data)
 
     SocketClient.push(joined_socket, topic, notification)
 
@@ -52,6 +53,8 @@ defmodule NotificationsConsumer.Consumer do
   end
 
   def handle_batch(_batcher, messages, _batch_info, _context) do
+    notifications = Enum.map(messages, &(Map.get(&1, :data)))
+    Repository.Notifications.insert_notifications(notifications)
     messages
   end
 end
