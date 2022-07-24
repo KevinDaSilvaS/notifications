@@ -1,6 +1,9 @@
 defmodule NotificationsWeb.NotificationsChannelTest do
   use NotificationsWeb.ChannelCase
 
+  @config Application.fetch_env!(:notifications, NotificationsWeb.NotificationsChannel)
+  @broadcasting_key Keyword.get(@config, :broadcasting_key)
+
   setup do
     {:ok, _, socket} =
       NotificationsWeb.NotificationsSocket
@@ -15,13 +18,19 @@ defmodule NotificationsWeb.NotificationsChannelTest do
     assert_reply ref, :ok, %{"hello" => "there"}
   end
 
-  #test "shout broadcasts to notifications:lobby", %{socket: socket} do
-  #  push(socket, "shout", %{"hello" => "all"})
-  #  assert_broadcast "shout", %{"hello" => "all"}
-  #end
-#
-  #test "broadcasts are pushed to the client", %{socket: socket} do
-  #  broadcast_from!(socket, "broadcast", %{"some" => "data"})
-  #  assert_push "broadcast", %{"some" => "data"}
-  #end
+  test "shout broadcasts to notifications:lobby when broadcasting key is set", %{socket: socket} do
+    body = %{
+        "topic" => "lobby",
+        "title" => "a notification title",
+        "message" => "a notification message",
+        "redirect" => "myapp.com/stuff-on-sale"
+    }
+    push(socket, "shout", %{"body" => body, "broadcasting_key" => @broadcasting_key})
+    assert_broadcast "shout", ^body
+  end
+
+  test "broadcasts are pushed to the client", %{socket: socket} do
+    broadcast_from!(socket, "broadcast", %{"some" => "data"})
+    assert_push "broadcast", %{"some" => "data"}
+  end
 end
