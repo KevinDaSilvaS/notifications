@@ -42,7 +42,7 @@ config :notifications, Repository.Notifications,
 
 config :broadway, NotificationsConsumer.Consumer,
   rabbit_host: System.get_env("RABBIT_HOST") || "172.17.0.3",
-  socket_url: "ws://0.0.0.0:4000/notifications/websocket"
+  socket_url: System.get_env("SOCKET_URL") || "ws://0.0.0.0:4000/notifications/websocket"
 
 config :notifications, NotificationsWeb.NotificationsChannel,
   broadcasting_key: System.get_env("BROADCASTING_KEY") || "admin"
