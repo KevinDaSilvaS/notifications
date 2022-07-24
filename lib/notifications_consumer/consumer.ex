@@ -3,15 +3,28 @@ defmodule NotificationsConsumer.Consumer do
   alias Mapper.NotificationMapper
   use Broadway
 
-  #{
-   # "topic": "12345",
-   # "title": "uma notificacao",
-   # "message": "uma notificacao",
-   # "redirect": ""
-   #}
-   @config Application.fetch_env!(:broadway, NotificationsConsumer.Consumer)
-   @host Keyword.get(@config, :rabbit_host)
-   @socket_url Keyword.get(@config, :socket_url)
+  @moduledoc """
+  A notification payload should contain the following fields:
+  ```
+   {
+      "topic": "12345",
+      "title": "uma notificacao",
+      "message": "uma notificacao",
+      "redirect": "myapp.com/stuff-on-sale"
+   }
+  ```
+
+  ```topic``` - The channel topic where the notification will be broadcasted
+  ```title``` - The push notification title
+  ```message``` - The push notification content
+  ```redirect``` - The address where the onclick event should take the user, it could be a mobile app screen, web url or just "" if the notification doesnt have a proper onclick event set
+
+  The notification will be broadcasted with the current datetime in utc format in a new field called ```created_date```
+  see Mapper.NotificationMapper (notification_mapper.ex) for more details
+  """
+  @config Application.fetch_env!(:broadway, NotificationsConsumer.Consumer)
+  @host Keyword.get(@config, :rabbit_host)
+  @socket_url Keyword.get(@config, :socket_url)
 
   def start_link(_opts) do
     Broadway.start_link(__MODULE__,
@@ -56,7 +69,8 @@ defmodule NotificationsConsumer.Consumer do
   end
 
   def handle_batch(_batcher, messages, _batch_info, _context) do
-    notifications = Enum.map(messages, &(Map.get(&1, :data)))
+    notifications = Enum.map(messages, &Map.get(&1, :data))
+
     repository = fn ->
       Repository.Notifications.insert_notifications(notifications)
     end
