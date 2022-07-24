@@ -10,8 +10,8 @@ defmodule NotificationsConsumer.Consumer do
   ```
    {
       "topic": "12345",
-      "title": "uma notificacao",
-      "message": "uma notificacao",
+      "title": "a notification title",
+      "message": "a notification message",
       "redirect": "myapp.com/stuff-on-sale"
    }
   ```
