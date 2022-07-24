@@ -94,8 +94,13 @@ defmodule Couchdb do
     body = Jason.decode!(res.body)
 
     case body["error"] do
-      nil -> {:ok, body["docs"]}
-      _ -> {:error, body}
+      nil ->
+        Logger.info("Documents queryed successfully")
+        {:ok, body["docs"]}
+
+      _ ->
+        Logger.error("Couch db error #{inspect(body)}")
+        {:error, body}
     end
   end
 
@@ -113,8 +118,13 @@ defmodule Couchdb do
     body = Jason.decode!(res.body)
 
     case many_inserted?(body) do
-      true -> {:ok, body}
-      _ -> {:error, body}
+      true ->
+        Logger.info("Documents inserted successfully")
+        {:ok, body}
+
+      _ ->
+        Logger.error("Couch db error #{inspect(body)}")
+        {:error, body}
     end
   end
 
