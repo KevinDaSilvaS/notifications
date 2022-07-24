@@ -1,5 +1,4 @@
 defmodule Repository.Notifications do
-  @behaviour Couchdb
 
   use Agent
   @instance_name Couchdb.Notifications

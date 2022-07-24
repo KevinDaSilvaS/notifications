@@ -2,8 +2,6 @@ defmodule Couchdb do
 
   use Agent
   require Logger
-
-  @callback start_link(arg :: any) :: any
   def start_link(config) do
     username = Map.get(config, :username)
     password = Map.get(config, :password)
