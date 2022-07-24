@@ -29,6 +29,17 @@ defmodule NotificationsWeb.NotificationsChannelTest do
     assert_broadcast "shout", ^body
   end
 
+  test "shouldnt shout broadcasts to notifications:lobby when broadcasting key is not set", %{socket: socket} do
+    body = %{
+        "topic" => "lobby",
+        "title" => "a notification title",
+        "message" => "a notification message",
+        "redirect" => "myapp.com/stuff-on-sale"
+    }
+    push(socket, "shout", %{"body" => body})
+    refute_broadcast "shout", ^body
+  end
+
   test "broadcasts are pushed to the client", %{socket: socket} do
     broadcast_from!(socket, "broadcast", %{"some" => "data"})
     assert_push "broadcast", %{"some" => "data"}
