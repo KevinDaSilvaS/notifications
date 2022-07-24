@@ -2,13 +2,13 @@ version: '3.7'
 
 services:
   rabbit-mq:
-    image: rabbitmq:3-management
+    image: rabbitmq:management
     hostname: my-rabbit
     ports: 
       - "${RABBITMQ_FST_PORT}:15672"
       - "${RABBITMQ_SND_PORT}:5672"
     networks:
-      - notifier
+      - notifications
 
   couchdb:
     image: couchdb
@@ -18,7 +18,7 @@ services:
       - COUCHDB_USER=${COUCHDB_USER}
       - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
     networks:
-      - notifier
+      - notifications
 
   app:
     image: app 
@@ -33,16 +33,16 @@ services:
       - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
       - COUCHDB_HOST=couchdb
       - COUCHDB_NAME=${COUCHDB_NAME}
-      - RABBITMQ_HOST=rabbit-mq
-      - RABBITMQ_USER=${RABBITMQ_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBIT_HOST=rabbit-mq
+      - RABBIT_USER=${RABBITMQ_USER}
+      - RABBIT_PASSWORD=${RABBITMQ_PASSWORD}
       - BROADCASTING_KEY=${BROADCASTING_KEY}
       - SOCKET_URL=${SOCKET_URL}
     ports: 
       - "${PORT}:4000"
     networks:
-      - notifier
+      - notifications
 networks:
-    notifier:
+    notifications:
         driver: bridge
-        name: notifier
+        name: notifications
