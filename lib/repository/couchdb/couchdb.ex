@@ -1,7 +1,10 @@
 defmodule Couchdb do
-
   use Agent
   require Logger
+
+  @doc """
+  Function start_link parses config, attempt to create the database and the index
+  """
   def start_link(config) do
     username = Map.get(config, :username)
     password = Map.get(config, :password)
@@ -12,16 +15,21 @@ defmodule Couchdb do
     http_client = Map.get(config, :http_client, Couchdb.HttpClient)
     process_name = Map.get(config, :name)
 
-    config = Map.merge(
-      config,
-      %{http_client: http_client, couchdb_url: couchdb_url}
-    )
+    config =
+      Map.merge(
+        config,
+        %{http_client: http_client, couchdb_url: couchdb_url}
+      )
+
     setup_db(config)
     index = Map.get(config, :index)
     set_index(index, {couchdb_url, http_client})
     Agent.start_link(fn -> config end, name: process_name)
   end
 
+  @doc """
+  Get config set in start_link function
+  """
   def get_config(name) do
     Agent.get(name, & &1)
   end
@@ -32,6 +40,7 @@ defmodule Couchdb do
     res = http_client.put(couchdb_url)
 
     body = Jason.decode!(res.body)
+
     case body["ok"] do
       true -> Logger.info("Database successfully created")
       _ -> Logger.error(body)
@@ -39,17 +48,20 @@ defmodule Couchdb do
   end
 
   defp set_index(nil, _), do: nil
+
   defp set_index(index, {couchdb_url, http_client}) do
     fields = Map.get(index, :fields)
     index_name = Map.get(index, :index_name)
     index_type = Map.get(index, :index_type)
+
     index = %{
       "index" => %{
-          "fields" => fields
+        "fields" => fields
       },
       "name" => index_name,
       "type" => index_type
     }
+
     create_index_url = couchdb_url <> "_index"
     res = http_client.post(create_index_url, index)
     body = Jason.decode!(res.body)
@@ -60,17 +72,21 @@ defmodule Couchdb do
     end
   end
 
+  @doc """
+  Find many registers function
+  """
   def find(fields, selector, sort, {limit, page}, process_name) do
     config = get_config(process_name)
     couchdb_url = Map.get(config, :couchdb_url)
     http_client = Map.get(config, :http_client)
     find_url = couchdb_url <> "_find"
+
     body = %{
       "selector" => selector,
-      "fields"   => fields,
-      "sort"     => sort,
-      "limit"    => limit,
-      "skip"     => (page-1)*limit,
+      "fields" => fields,
+      "sort" => sort,
+      "limit" => limit,
+      "skip" => (page - 1) * limit,
       "execution_stats" => false
     }
 
@@ -83,19 +99,9 @@ defmodule Couchdb do
     end
   end
 
-  def insert_one(register, process_name) do
-    config = get_config(process_name)
-    couchdb_url = Map.get(config, :couchdb_url)
-    http_client = Map.get(config, :http_client)
-
-    res = http_client.post(couchdb_url, register)
-    body = Jason.decode!(res.body)
-    case body["error"] do
-      nil -> {:ok, body}
-      _ -> {:error, body["error"]}
-    end
-  end
-
+  @doc """
+  Insert many registers function
+  """
   def insert_many(registers, process_name) do
     config = get_config(process_name)
     couchdb_url = Map.get(config, :couchdb_url)
@@ -105,6 +111,7 @@ defmodule Couchdb do
 
     res = http_client.post(insert_many_url, docs)
     body = Jason.decode!(res.body)
+
     case many_inserted?(body) do
       true -> {:ok, body}
       _ -> {:error, body}
@@ -114,6 +121,7 @@ defmodule Couchdb do
   defp many_inserted?(body) when is_list(body) do
     true
   end
+
   defp many_inserted?(_) do
     false
   end
