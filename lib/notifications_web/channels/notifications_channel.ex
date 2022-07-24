@@ -1,6 +1,9 @@
 defmodule NotificationsWeb.NotificationsChannel do
   use NotificationsWeb, :channel
 
+  @config Application.fetch_env!(:channel, NotificationsWeb.NotificationsChannel)
+  @broadcasting_key Keyword.get(@config, :broadcasting_key)
+
   @impl true
   def join("notifications:"<> _topic_name, _payload, socket) do
       {:ok, socket}
@@ -27,7 +30,7 @@ defmodule NotificationsWeb.NotificationsChannel do
   end
 
   # Checks if the broadcaster is authorized.
-  defp authorized?(broadcasting_key) when broadcasting_key == "admin" do
+  defp authorized?(broadcasting_key) when broadcasting_key == @broadcasting_key do
     true
   end
   defp authorized?(_), do: false

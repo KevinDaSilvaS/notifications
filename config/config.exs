@@ -34,6 +34,19 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :couchdb, Repository.Notifications,
+  host:     System.get_env("COUCHDB_HOST")     || "172.17.0.4",
+  user:     System.get_env("COUCHDB_USER")     || "user",
+  password: System.get_env("COUCHDB_PASSWORD") || "12345",
+  port:     System.get_env("COUCHDB_PORT")
+
+config :broadway, NotificationsConsumer.Consumer,
+  rabbit_host: System.get_env("RABBIT_HOST") || "172.17.0.3",
+  socket_url: "ws://0.0.0.0:4000/notifications/websocket"
+
+config :channel, NotificationsWeb.NotificationsChannel,
+  broadcasting_key: System.get_env("BROADCASTING_KEY") || "admin"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

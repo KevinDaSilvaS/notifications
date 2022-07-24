@@ -3,6 +3,12 @@ defmodule Repository.Notifications do
 
   use Agent
   @instance_name Couchdb.Notifications
+
+  @config Application.fetch_env!(:couchdb, Repository.Notifications)
+  @username Keyword.get(@config, :user)
+  @password Keyword.get(@config, :password)
+  @host Keyword.get(@config, :host)
+  @port Keyword.get(@config, :port)
   def start_link(_) do
     index = %{
       :fields     => ["created_date"],
@@ -11,11 +17,11 @@ defmodule Repository.Notifications do
     }
 
     config = %{
-      :username => "user",
-      :password => "12345",
+      :username => @username,
+      :password => @password,
       :db_name  => "notifications",
-      :host     => "172.17.0.4",
-      :port     => 5984,
+      :host     => @host,
+      :port     => @port,
       :name     => @instance_name,
       :index    => index
     }
