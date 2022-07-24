@@ -1,5 +1,5 @@
 defmodule Mapper.NotificationMapper do
-  @config Application.fetch_env!(:channel, NotificationsWeb.NotificationsChannel)
+  @config Application.fetch_env!(:notifications, NotificationsWeb.NotificationsChannel)
   @broadcasting_key Keyword.get(@config, :broadcasting_key)
 
   def prepare_notification(body) do

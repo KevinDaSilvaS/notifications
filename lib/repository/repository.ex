@@ -4,7 +4,7 @@ defmodule Repository.Notifications do
   use Agent
   @instance_name Couchdb.Notifications
 
-  @config Application.fetch_env!(:couchdb, Repository.Notifications)
+  @config Application.fetch_env!(:notifications, Repository.Notifications)
   @username Keyword.get(@config, :user)
   @password Keyword.get(@config, :password)
   @host Keyword.get(@config, :host)
