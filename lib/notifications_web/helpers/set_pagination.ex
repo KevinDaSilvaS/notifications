@@ -11,8 +11,8 @@ defmodule NotificationsWeb.Helpers.SetPagination do
     {limit, page}
   end
 
-  def set_page(page) when page > 0 do
+  defp set_page(page) when page > 0 do
     page
   end
-  def set_page(_), do: @default_page |> String.to_integer()
+  defp set_page(_), do: @default_page |> String.to_integer()
 end
