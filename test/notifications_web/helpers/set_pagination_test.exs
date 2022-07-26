@@ -15,4 +15,10 @@ defmodule NotificationsWeb.Helpers.SetPaginationTest do
 
     assert result == {10, 1}
   end
+
+  test "should set page default when page is less than zero" do
+    opts = %{"page" => "-1"}
+    result = NotificationsWeb.Helpers.SetPagination.set(opts)
+    assert result == {10, 1}
+  end
 end
