@@ -2,7 +2,7 @@
 
 ## About
 Notifications is a push notifications microservice that uses broadway to receive notifications and broadcasts then trough phoenix channels and also saves then on couchdb.
-Also notifications is a substitution of notifiers that has the same purpose, but the notifications is way more tested, more bug prone and uses broadway to process messages instead of amqp library
+Also notifications is a substitution of [`https://github.com/KevinDaSilvaS/notifier`](notifier) that has the same purpose, but the notifications is way more tested, more bug prone and uses broadway to process messages instead of amqp library
 
 ## How to run
 There's two ways of running the application, the easier and simplest way is by using the docker-compose file, by just running:
