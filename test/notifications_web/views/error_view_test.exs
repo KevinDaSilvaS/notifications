@@ -12,4 +12,9 @@ defmodule NotificationsWeb.ErrorViewTest do
     assert render(NotificationsWeb.ErrorView, "500.json", []) ==
              %{errors: %{detail: "Internal Server Error"}}
   end
+
+  test "should call template_not_found successfully" do
+    result = NotificationsWeb.ErrorView.template_not_found("test.json", [])
+    assert result == %{errors: %{detail: "Internal Server Error"}}
+  end
 end
