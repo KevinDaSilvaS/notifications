@@ -18,7 +18,7 @@ To start your Phoenix server:
   * Install dependencies with `mix deps.get`
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
-Now you can visit [`localhost:4000/api/notifications/topic`](http://localhost:4000/api/notifications/topic) from your browser.
+Now you can visit [`localhost:4000/api/notifications/${topic}`](http://localhost:4000/api/notifications/topic) from your browser.
 
 Or pushing a notification on rabbitmq:
 
